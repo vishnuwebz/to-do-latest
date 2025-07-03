@@ -1,0 +1,177 @@
+{% extends 'todo/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow border-0">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h4 mb-0 text-primary">
+                        <i class="bi bi-list-task me-2"></i>Task Manager
+                    </h1>
+                    <a href="{% url 'add_task' %}" class="btn btn-primary btn-lg rounded-pill">
+                        <i class="bi bi-plus-lg me-1"></i> Add Task
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-body p-4">
+                <!-- Active Tasks Section -->
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="h5 mb-0 text-uppercase fw-bold text-primary">
+                            <i class="bi bi-lightning me-2"></i>Active Tasks
+                        </h2>
+                        <span class="badge bg-primary rounded-pill">{{ active_tasks|length }}</span>
+                    </div>
+                    
+                    {% if active_tasks %}
+                    <div class="row g-4">
+                        {% for task in active_tasks %}
+                        <div class="col-md-6">
+                            <div class="task-card card border-0 shadow-sm h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h5 class="card-title mb-2">
+                                                <span class="{{ task.get_priority_class }}">{{ task.title }}</span>
+                                            </h5>
+                                            {% if task.due_date %}
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="bi bi-calendar-event me-2 text-muted"></i>
+                                                <small class="text-muted">Due: {{ task.due_date }}</small>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light rounded-circle" type="button" 
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'complete_task' task.id %}">
+                                                        <i class="bi bi-check-circle me-2"></i>Mark as Complete
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="{% url 'delete_task' task.id %}">
+                                                        <i class="bi bi-trash me-2"></i>Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <span class="badge bg-light text-dark border me-2">
+                                            {% if task.priority == 'high' %}
+                                            <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>High Priority
+                                            {% elif task.priority == 'medium' %}
+                                            <i class="bi bi-flag-fill text-warning me-1"></i>Medium Priority
+                                            {% else %}
+                                            <i class="bi bi-arrow-down-circle-fill text-success me-1"></i>Low Priority
+                                            {% endif %}
+                                        </span>
+                                        <small class="text-muted">{{ task.created|timesince }} ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-check-all display-1 text-primary opacity-25"></i>
+                        </div>
+                        <h3 class="h5 text-muted">No Active Tasks</h3>
+                        <p class="text-muted">Add your first task to get started!</p>
+                        <a href="{% url 'add_task' %}" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-lg me-1"></i> Add Task
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Completed Tasks Section -->
+                <div class="mt-5 pt-4 border-top">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="h5 mb-0 text-uppercase fw-bold text-success">
+                            <i class="bi bi-check2-all me-2"></i>Completed Tasks
+                        </h2>
+                        <span class="badge bg-success rounded-pill">{{ completed_tasks|length }}</span>
+                    </div>
+                    
+                    {% if completed_tasks %}
+                    <div class="row g-4">
+                        {% for task in completed_tasks %}
+                        <div class="col-md-6">
+                            <div class="task-card card border-0 shadow-sm h-100 bg-light-subtle">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h5 class="card-title mb-2 completed">
+                                                <span>{{ task.title }}</span>
+                                            </h5>
+                                            {% if task.due_date %}
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="bi bi-calendar-event me-2 text-muted"></i>
+                                                <small class="text-muted">Due: {{ task.due_date }}</small>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light rounded-circle" type="button" 
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'complete_task' task.id %}">
+                                                        <i class="bi bi-arrow-counterclockwise me-2"></i>Mark as Active
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="{% url 'delete_task' task.id %}">
+                                                        <i class="bi bi-trash me-2"></i>Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <span class="badge bg-light text-dark border me-2">
+                                            <i class="bi bi-check-circle-fill text-success me-1"></i>Completed
+                                        </span>
+                                        <small class="text-muted">{{ task.created|timesince }} ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <div class="mb-3">
+                            <i class="bi bi-hourglass-split display-4 text-muted opacity-25"></i>
+                        </div>
+                        <h3 class="h5 text-muted">No Completed Tasks</h3>
+                        <p class="text-muted">Complete some tasks to see them here</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card-footer bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        {{ active_tasks|length }} active task{{ active_tasks|pluralize }}, 
+                        {{ completed_tasks|length }} completed
+                    </small>
+                    <small class="text-muted">Total: {{ active_tasks|length|add:completed_tasks|length }} tasks</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

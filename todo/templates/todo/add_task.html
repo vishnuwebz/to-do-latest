@@ -1,0 +1,51 @@
+{% extends 'todo/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow border-0">
+            <div class="card-header bg-white py-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0 text-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Task
+                    </h2>
+                    <a href="{% url 'task_list' %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_title" class="form-label fw-bold">Task Title</label>
+                        {{ form.title }}
+                        <div class="form-text">Enter a descriptive title for your task</div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="id_due_date" class="form-label fw-bold">Due Date</label>
+                            {{ form.due_date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_priority" class="form-label fw-bold">Priority</label>
+                            {{ form.priority }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-save me-2"></i>Save Task
+                        </button>
+                        <a href="{% url 'task_list' %}" class="btn btn-outline-secondary btn-lg px-4">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
