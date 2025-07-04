@@ -8,6 +8,7 @@ class Task(models.Model):
     completed = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField(null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
     priority = models.CharField(
         max_length=10,
         choices=[
